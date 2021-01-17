@@ -93,4 +93,4 @@ Lastly, we need to write an `update_customer` query and make it run when the upd
 
 Now let's make the Update button run `update_customer` query. To do this, open the customization menu for the widget and under `Actions` `onClick` select `Execute a DB Query` and then select our `update_customer` query. We will also like to call the `get_customers` query once our update query is completed. We're done!
 
-![updating a customer using the form widget](images/.gif)
+![updating a customer using the form widget](images/updating_customer.gif)
