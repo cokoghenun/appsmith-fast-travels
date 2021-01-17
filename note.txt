@@ -1,0 +1,27 @@
+Customer
+* name
+* email
+* phone
+* image
+* type? [admin, regular]
+
+Bus
+* code
+* type
+* seats
+* route
+* status: [ontrip, inrepair, inpark]
+* location [lat, lon]
+* features: [ac, head room, leg room]
+
+route
+* name
+* departure time/location
+* arrival time/location
+* price
+
+trip (transaction)
+* status
+* price
+* customer
+* bus
