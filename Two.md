@@ -20,7 +20,7 @@ We need to need to update the table with actual bus data. To do this, let's head
 
 ```json
 {
-  "find": "busses",
+  "find": "buses",
   "skip": {{(Table1.pageNo - 1)*18}},
   "limit":  18
 }
@@ -40,7 +40,7 @@ The last thing we want to do is to update the status and route of a bus. To make
 
 ```json
 {
-  "update": "busses",
+  "update": "buses",
   "updates": [
     {
       "q": {

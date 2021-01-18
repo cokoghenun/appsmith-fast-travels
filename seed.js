@@ -24,11 +24,11 @@ MongoClient.connect(process.env.DB_URL, async function (err, client) {
   const db = client.db('fast-travels');
 
   /**
-   * SEED BUSSES
+   * SEED BUSES
    */
 
-  let busses = [];
-  const bussCollection = db.collection('busses');
+  let buses = [];
+  const busCollection = db.collection('buses');
 
   for (let i = 0; i < 100; i += 1) {
     const seats = [5, 15, 20, 25, 30, 40, 50];
@@ -55,9 +55,9 @@ MongoClient.connect(process.env.DB_URL, async function (err, client) {
       status: statuses[Math.floor(Math.random() * statuses.length)],
       feature: features[Math.floor(Math.random() * features.length)],
     };
-    busses.push(bus);
+    buses.push(bus);
   }
-  bussCollection.insertMany(busses);
+  busCollection.insertMany(buses);
 
   /**
    * SEED TRIPS
@@ -72,7 +72,7 @@ MongoClient.connect(process.env.DB_URL, async function (err, client) {
 
     let trip = {
       id: genID(),
-      bus: busses[i].id,
+      bus: buses[i].id,
       enddate: faker.date.future(),
       startdate: faker.date.past(),
       price: prices[Math.floor(Math.random() * prices.length)],
