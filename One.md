@@ -1,4 +1,11 @@
-# Appsmith
+---
+title: Building Internal Tools With Appsmith
+published: false
+description: 
+tags: no_code, low_code, internal_tools, app_builders
+cover_image: https://dev-to-uploads.s3.amazonaws.com/i/kqfo9wdcpqyzvmg2n6we.png
+---
+
 
 ## Intro
 
@@ -48,7 +55,7 @@ We can now go ahead to query the database. To do this click on the plus icon on 
 
 Now we can go back and to our customers table and make use of the data returned form our `get_customers` query. Now the power of Appsmith begins to shine as shown below
 
-![linking data from the query to our table](images/.gif)
+![linking data from the query to our table](images/using_data_from_query.gif)
 
 Appsmith supports the Mustache syntax and allow us to write Javascript expressions. Auto-complete is also supported just like in VScode. This make is easy to write custom logic in various parts of our app pretty quickly.
 
@@ -68,7 +75,7 @@ Next, let's make it such that the data of the selected customer on the table wou
 
 Where `Table1` is the name of our table widget (this is the default name and can be easily renamed). Go ahead and do the same for all the other input widget. Then see the magic happen.
 
-![auto updating the input widget by selecting a row on the table](images/.gif)
+![auto updating the input widget by selecting a row on the table](images/auto_updating_from_selected_row.gif)
 
 Lastly, we need to write an `update_customer` query and make it run when the update button on the form is clicked. The query should dynamically fetch data from the input widgets and should look like this
 
@@ -98,6 +105,7 @@ Now let's make the Update button run our `update_customer` query. To do this, op
 ![updating a customer using the form widget](images/updating_customer.gif)
 
 ## 2. Creating a bus management dashboard
+
 In this section, we are going to be adding another page to our application that would display the information of the buses we have, visualize their current location and give us the functionality to update them.
 
 ### UI setup
@@ -158,3 +166,66 @@ The last thing we want to do is to update the status and route of a bus. To make
 Now let's see everything in action
 
 ![buses dashboard in action](images/buses_dashbard_in_action.gif)
+
+And just like that we have the customer and buses dashboard setup. Let's move on to the last piece.
+
+## 3. Trips management dashboard
+
+In this last section we are going add a page to manage trips. So let's go ahead and make a page called 'Trips'. The UI will be quite simple. It will contain a paginated table showing all trips, a table showing customers on a selected trip and a tab showing both trp info and customer info and also refund and cancel buttons
+
+![ui layout of the trips dashboard page](images/trip_dashboard_ui_layout.gif)
+
+As you may have noticed, we are going to be making use of two new widgets: the container widget and tab widget. The container widget allows us to group several widgets together. It is also useful for creating titled segments on a page as we did above. Next, we have the tab widget that similarly let's us group several widgets together into tabs. The beauty of the tab widget is that we can neatly hide widgets that are not needed in the moment as only the selected tab is visible.
+
+Now, let's linkup data to our tables. We'd need a query to get trips, one to get the bus assigned, and another to get the customers on a particular trip. Let's name our query to get trips `get_trips` and it should look like this.
+
+```json
+{
+  "find": "trips",
+  "skip": {{(Table1.pageNo - 1)*17}},
+  "limit":  17
+}
+```
+
+We would call the query to get the bus assigned to a trip `get_trip_bus` and it should look like this
+
+```json
+{
+  "find": "busses",
+  "filter": {
+    "id": "{{ Table1.selectedRow.bus }}"
+  },
+  "limit": 1
+}
+```
+
+And lastly the query to get all the customers on a trip, called `get_trip_customers` should be
+
+```json
+{
+  "find": "customers",
+  "filter": {
+    "trip": "{{Table1.selectedRow.id}}"
+  },
+  "limit": 10
+}
+```
+
+Now let's go back to our widgets and feed them the data. The trips table should be linked with data from the `get_trips` query. Server-side pagination should be enabled on the table and the query should be re-run 'onPageChange'. We should make sure that the `get_trip_customers` query is run 'onRowSelected' and the `get_trip_bus` query is run 'onSuccess'. Then let's go ahead to link to customers table to the data from the `get_trip_customers` query, and then do the same for the other widgets with their respective data source.
+
+Our Trips dashboard will work as shown below.
+
+![overview of the trips dashboard](images/trips_dashboard_with_data.gif)
+
+We would now go ahead to create actions for our cancel button. We want an api endpoint called `cancel_tip` to be run. Typically, endpoint such as these would be hooked up to Stripe to perform the refunds and have emails send out to customers using a service like Sendgrid. The api can be configured like we have below:
+
+![configuring an api](images/cancel_trip_api.jpg)
+
+And lastly, let's hook it up to our button and do the same for the refund customer button.
+
+![using the cancel trip api endpoint](images/using_cancel_trip_api.gif)
+
+And just like that, we have all three dashboard setup in our app. We can go ahead and deploy our application and hand it off to the customer support team. Your boss and the CS team will love you for using Appsmith 😁
+
+## Wrap Up
+This has been along article and you deserve a beer 🍺 for making it this far. We seen how easy it is to setup Appsmith and build internal tools in a few minutes. I'm pretty confident that you'll be using Appsmith on your next project. And if you do, give a shout out to the team to let them know how awesome they are!
